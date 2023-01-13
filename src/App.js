@@ -1,9 +1,12 @@
 import React from 'react'
-import { Button } from "antd";
+import { Routes, Route } from "react-router-dom";
+import Login from './pages/Login'
+import Admin from './pages/Admin'
 export default function App() {
     return (
-        <div>
-            <Button type='primary'>按钮</Button>
-        </div>
+        <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='/*' element={<Admin />} />
+        </Routes>
     )
 }
