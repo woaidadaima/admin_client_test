@@ -3,12 +3,15 @@ import React, { useCallback } from 'react'
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
+import { connect } from 'react-redux';
 import { reqRoleList } from '../../api';
 import timeFormat from '../../utils/dateFormat';
 import AuthForm from './auth_form';
 import CreateRole from './create_role';
+import { resetUser } from '../../redux/actions';
 
-export default function Roles() {
+function Roles(props) {
+    const { user, resetUser } = props
     const [roleList, setRoleList] = useState([])
     const [selectedRowKeys, setSelectedRowKeys] = useState([])
     // 保存选中的记录
@@ -50,6 +53,7 @@ export default function Roles() {
         creatRoleRef.current.showModal()
     }
     const showAuthModal = () => {
+        console.log(authRoleRef);
         authRoleRef.current.showModal()
     }
     useEffect(() => {
@@ -93,7 +97,17 @@ export default function Roles() {
                 }}
             />
             <CreateRole ref={creatRoleRef} roleList={roleList} getRoleList={getRoleList} />
-            <AuthForm ref={authRoleRef} selectRole={selectRecord} getRoleList={getRoleList} />
+            <AuthForm
+                ref={authRoleRef}
+                selectRole={selectRecord}
+                getRoleList={getRoleList}
+                user={user}
+                resetUser={resetUser}
+            />
         </Card>
     )
 }
+export default connect(
+    state => ({ user: state.user }),
+    { resetUser }
+)(Roles)

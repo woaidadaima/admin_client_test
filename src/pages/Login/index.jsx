@@ -4,15 +4,15 @@ import './index.less'
 import logo from '../../assets/images/logo.png'
 // 引入登录表单组件
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, message } from 'antd';
-// 引入Api接口
-import { reqLogin } from '../../api';
-// 引入路由组件
-import { Navigate, useNavigate } from "react-router-dom";
-import memory from '../../utils/memoryUtils';
-import { setUser } from '../../utils/storageUtils';
+import { Button, Form, Input } from 'antd';
 
-export default function Login() {
+// 引入路由组件
+import { Navigate, } from "react-router-dom";
+
+import { connect } from 'react-redux';
+import { login } from '../../redux/actions';
+
+function Login(props) {
     // 统一设置错误提示信息
     /* const validateMessages = {
         required: "${name}必须输入",
@@ -39,26 +39,30 @@ export default function Login() {
             return Promise.reject('密码长度不能超过12位')
         } else { return Promise.resolve() }
     }
-    // 编程时路由导航
-    const navigate = useNavigate()
+
     // 提交表单函数成功执行回调
-    const onFinish = async (values) => {
+    const onFinish = (values) => {
         // 发送ajax请求
-        const result = await reqLogin(values)
-        if (result.status === 0) {
-            message.success('登录成功');
-            // 将用户信息保存到内存中
-            memory.user = result.data
-            // localStorage.setItem('user_key', JSON.stringify(result.data))
-            setUser(result.data)
-            // 登录成功跳转到admin页面
-            navigate('/', {
-                replace: true,
-            })
-        } else {
-            message.error(result.msg)
-        }
+        // const result = await reqLogin(values)
+        // if (result.status === 0) {
+        //     message.success('登录成功');
+        //     // 将用户信息保存到内存中
+        //     memory.user = result.data
+        //     // localStorage.setItem('user_key', JSON.stringify(result.data))
+        //     setUser(result.data)
+        //     // 登录成功跳转到admin页面
+        // navigate('/home', {
+        //     replace: true,
+        // })
+        // } else {
+        //     message.error(result.msg)
+        // }
+        props.login(values)
+        // if (getUser().username) {
+
+        // }
     }
+
     // 提交表单失败执行回调
     /* const onFinishFailed = ({ values, errorFields, outOfDate }) => {
          //函数体
@@ -70,7 +74,7 @@ export default function Login() {
       console.log(changedValues);
   }  */
     // 如果用户信息存在，路由跳转回admin页面
-    if (memory.user && memory.user._id) {
+    if (props.user && props.user._id) {
         return <Navigate to='/' replace={true} />
     }
     return (
@@ -80,6 +84,7 @@ export default function Login() {
                 <h1>React项目: 后台管理系统</h1>
             </header>
             <section className="login-body">
+                <div className={props.user.errorMsg ? 'login-error show' : 'login-error'}>{props.user.errorMsg}</div>
                 <h2>用户登录</h2>
                 <Form
                     name="normal_login"
@@ -129,3 +134,12 @@ export default function Login() {
         </div >
     )
 }
+export default connect(
+    state => ({
+        user: state.user,
+        errorMsg: state.errorMsg
+    }),
+    {
+        login,
+    }
+)(Login)

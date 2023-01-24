@@ -1,18 +1,19 @@
 import React from 'react'
-import memory from '../../utils/memoryUtils';
-import { Navigate, Outlet, useRoutes } from 'react-router-dom';
+import { Outlet, useRoutes } from 'react-router-dom';
 import { Layout } from 'antd';
 import LeftNav from '../../componets/LeftNav';
 // 引入路由表
 import routes from '../../routes'
 import Header from '../../componets/Header';
+import { connect } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 const { Footer, Content } = Layout;
-export default function Admin() {
-    const user = memory.user
+function Admin(props) {
+    // const user = memory.user
     const element = useRoutes(routes)
     // 用户信息不存在，重定向到登录页面
-    if (!(user && user._id)) {
-        console.log(1);
+
+    if (!(props.user && props.user._id)) {
         return <Navigate to='/login' replace={true} />
     }
     return (
@@ -27,4 +28,6 @@ export default function Admin() {
         </Layout>
     )
 }
-
+export default connect(
+    state => ({ user: state.user })
+)(Admin)

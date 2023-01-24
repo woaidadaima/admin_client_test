@@ -2,14 +2,11 @@ import { Form, Input, message, Modal, Tree } from 'antd'
 import React, { forwardRef, useState } from 'react'
 import { useEffect } from 'react';
 import { useImperativeHandle } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { reqSetRoleAuth } from '../../api';
 import menuList from '../../config/menuconfig';
-import memory from '../../utils/memoryUtils';
 import { getUser, removeUser } from '../../utils/storageUtils';
 
 const AuthForm = forwardRef((props, ref) => {
-    const navigate = useNavigate()
     // 接受父组件传递的props
     let { selectRole, getRoleList } = props
 
@@ -49,15 +46,15 @@ const AuthForm = forwardRef((props, ref) => {
             selectRole.menus = result.data.menus
             setIsModalOpen(false);
             // 如果修改的是当前登录的角色权限，则退出登录并清除登录信息
-            if (memory.user.role.name === selectRole.name) {
+            if (props.user.role.name === selectRole.name) {
                 message.info('当前角色已修改，请重新登陆')
-                // 清空内存中的user
-                memory.user = {}
+                // 清空Redux中的user
+                props.resetUser()
                 // 清空浏览器缓存
                 removeUser()
-                navigate('/login', {
-                    replace: true
-                })
+                // navigate('/login', {
+                //     replace: true
+                // })
             } else {
                 message.success('设置角色权限成功')
                 // 重新请求角色列表
@@ -129,4 +126,12 @@ const AuthForm = forwardRef((props, ref) => {
         </Modal>
     )
 })
+// export default connect(
+//     state => ({ user: state.user }),
+//     { resetUser }
+// )(AuthForm)
+// console.log(connect(
+//     state => ({ user: state.user }),
+//     { resetUser }
+// )(AuthForm), AuthForm);
 export default AuthForm
