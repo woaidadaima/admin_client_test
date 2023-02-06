@@ -10,6 +10,7 @@ import Orders from "../pages/Orders";
 import Users from '../pages/Users'
 import Detail from "../pages/Products/detail";
 import AddUpdate from "../pages/Products/add-update";
+import NotFound from "../pages/NotFound";
 /* 路由表 */
 const routes = [
     {
@@ -70,8 +71,12 @@ const routes = [
         element: <Orders />
     },
     {
-        path: '/*',
+        path: '/',
         element: <Navigate to='/home' />
+    },
+    {
+        path: '/*',
+        element: <NotFound />
     }
 ]
 export default routes

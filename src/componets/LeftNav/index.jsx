@@ -27,8 +27,9 @@ function LeftNav(props) {
         if (hasAuth(currentValue)) {
             const { title, key, icon, children } = currentValue
             // 判断当前路径是否和key相同，相同则设置标题
-            if (pathname === key) {
-                props.setTitle(currentValue.title)
+            // console.log(currentValue, pathname.indexOf(key) !== -1 && (key === '/products/home'));
+            if (pathname === key || (pathname.indexOf(key) !== -1 && (key === '/products/home'))) {
+                props.setTitle(title)
             }
             previousValue.push(getItem(title, key, icon, children))
         }
@@ -70,7 +71,6 @@ function LeftNav(props) {
     // }
     // 获取默认打开的子菜单key
     const openKey = '/' + pathname.split('/')[1]
-
     useEffect(() => {
         setItems(mapList(menuList))
     }, [pathname])// eslint-disable-line react-hooks/exhaustive-deps
@@ -82,7 +82,10 @@ function LeftNav(props) {
             </Link>
             <Menu
                 defaultSelectedKeys={['/home']}
-                selectedKeys={pathname}
+                selectedKeys={
+                    // console.log(pathname.indexOf('/products/home') !== -1 ? '/proucts/home' : pathname)
+                    pathname.indexOf('/products/home') !== -1 ? '/products/home' : pathname
+                }
                 defaultOpenKeys={[openKey]}
                 mode="inline"
                 theme="dark"
